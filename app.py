@@ -1,24 +1,42 @@
 import streamlit as st
-import random
 
-st.title("Simple Number Guessing Game 🎯")
+# Set page config
+st.set_page_config(page_title="Mini Netflix Demo", layout="wide")
 
-# Initialize session state for the random number
-target = st.session_state.get("target", random.randint(1, 20))
-st.session_state.target = target
+# Header section
+st.markdown("""
+    <h1 style='text-align: center; color: red;'>Mini Netflix</h1>
+    <p style='text-align: center;'>Watch your favourite movies and shows</p>
+""", unsafe_allow_html=True)
 
-st.write("I'm thinking of a number between 1 and 20. Can you guess it?")
+# Search bar
+search = st.text_input("Search for movies...", "")
 
-# Input from user
-guess = st.number_input("Enter your guess:", min_value=1, max_value=20, step=1)
+st.write("---")
 
-if st.button("Check"):
-    if guess == target:
-        st.success("🎉 Correct! You guessed the number!")
-        # Reset with new number
-        st.session_state.target = random.randint(1, 20)
-        st.info("A new number has been generated. Try again!")
-    elif guess < target:
-        st.warning("Too low! Try a higher number.")
-    else:
-        st.warning("Too high! Try a lower number.")
+# Fake movie data
+movies = [
+    {"title": "Stranger Things", "img": "https://i.imgur.com/5Z6w8C9.jpg"},
+    {"title": "Money Heist", "img": "https://i.imgur.com/VDfB8Qz.jpg"},
+    {"title": "Wednesday", "img": "https://i.imgur.com/Wv1Fcss.jpg"},
+    {"title": "The Witcher", "img": "https://i.imgur.com/gE4n6Q2.jpg"},
+    {"title": "Dark", "img": "https://i.imgur.com/rjqVcYJ.jpg"},
+    {"title": "Lucifer", "img": "https://i.imgur.com/nzXJ4wS.jpg"},
+]
+
+# Filter movies by search
+if search:
+    movies = [m for m in movies if search.lower() in m["title"].lower()]
+
+# Display movies as a grid
+cols = st.columns(3)
+
+for index, movie in enumerate(movies):
+    with cols[index % 3]:
+        st.image(movie["img"], use_column_width=True)
+        st.write(f"### {movie['title']}")
+        st.button("Play", key=movie["title"])
+
+# Footer
+st.write("---")
+st.markdown("<p style='text-align:center;'>Made with ❤️ using Streamlit</p>", unsafe_allow_html=True)
